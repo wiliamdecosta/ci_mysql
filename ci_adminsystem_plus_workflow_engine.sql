@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 26, 2019 at 03:17 PM
+-- Generation Time: Sep 26, 2019 at 10:09 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 5.6.39
 
@@ -166,7 +166,7 @@ proc_label:BEGIN
   
   IF ln_user_id_donor is null THEN
     SET o_ret_id = -999;
-  	SET o_ret_message = 'error submit - user id donnor tidak dikenal';
+  	SET o_ret_message = 'error submit - user id submitter tidak dikenal';
   	LEAVE proc_label;
   END IF;
   
@@ -191,7 +191,7 @@ proc_label:BEGIN
     SET user_id_submitter = ln_user_id_donor,
     submit_date = now(),
     profile_type = 'REJECT',
-    message = s_message
+    message = concat('** Rejected by : ',s_curr_user_submitter, ' ** : ', s_message, COALESCE(concat(' | ', message), ''))
     WHERE t_order_control_id = i_curr_t_order_control_id;
 
     UPDATE t_order
@@ -253,7 +253,8 @@ proc_label:BEGIN
   
   SET autocommit = 0;
   START TRANSACTION;
-    
+  
+  /*  
   IF i_curr_ref_t_order_control_id is null or i_curr_ref_t_order_control_id = 0 THEN
     SET o_ret_id = -999;
   	SET o_ret_message = 'error submit - ref_t_order_control_id tidak boleh kosong';
@@ -265,13 +266,14 @@ proc_label:BEGIN
   	SET o_ret_message = 'error submit - prev_job_wf_id tidak boleh kosong';
   	LEAVE proc_label;
   END IF;
+  */
   
   SELECT user_id into ln_user_id_donor
   FROM users WHERE user_name = s_curr_user_submitter;
   
   IF ln_user_id_donor is null THEN
     SET o_ret_id = -999;
-  	SET o_ret_message = 'error submit - user id donnor tidak dikenal';
+  	SET o_ret_message = 'error submit - user id submitter tidak dikenal';
   	LEAVE proc_label;
   END IF;
   
@@ -299,12 +301,21 @@ proc_label:BEGIN
 		SET user_id_donor = ln_user_id_donor,
 		donor_date = now(),
 		profile_type = 'INBOX',
-		message = concat('** Send back job from ',s_curr_user_submitter,' ** : ',s_message)
+		message = concat('** Send back job from ',s_curr_user_submitter,' ** : ',s_message, COALESCE(concat(' | ',message), ''))
 		WHERE t_order_control_id = i_curr_ref_t_order_control_id;
 
 		
 		DELETE FROM t_order_control_wf
 		WHERE t_order_control_id = i_curr_t_order_control_id;
+        
+    ELSE
+    	/* back to state before f_first_submit */
+        DELETE FROM t_order_control_wf
+		WHERE t_order_control_id = i_curr_t_order_control_id;
+        
+        UPDATE t_order
+        SET p_order_status_id = 1
+        WHERE t_order_id = ln_order_id;
     end if;
   end;    
   
@@ -1696,7 +1707,7 @@ INSERT INTO `t_order` (`t_order_id`, `order_no`, `order_date`, `p_order_status_i
 (7, '0000000007', '2019-09-14 13:48:38', 4),
 (8, '0000000008', '2019-09-14 13:48:44', 3),
 (9, '0000000009', '2019-09-20 00:58:35', 1),
-(10, '0000000010', '2019-09-26 16:11:19', 1),
+(10, '0000000010', '2019-09-26 16:11:19', 2),
 (11, '0000000011', '2019-09-26 16:11:53', 3),
 (12, '0000000012', '2019-09-26 16:12:20', 2);
 
@@ -1740,7 +1751,8 @@ INSERT INTO `t_order_control_wf` (`t_order_control_id`, `ref_order_control_id`, 
 (26, 12, 1, 2, 3, 4, 4, '2019-09-26 01:13:43', '2019-09-26 01:37:12', '2019-09-26 02:12:31', 'verifikasi OK', 8, '0000000008', 'FINISH'),
 (27, NULL, 1, 1, 4, 3, 3, '2019-09-26 17:00:21', '2019-09-26 16:13:11', '2019-09-26 16:34:13', '** Send back job from pengesahan_cuti ** : test 123', 12, '0000000012', 'INBOX'),
 (30, NULL, 1, 1, 1, 3, 3, '2019-09-26 17:08:46', '2019-09-26 17:09:28', '2019-09-26 17:10:20', NULL, 11, '0000000011', 'OUTBOX'),
-(31, 30, 1, 2, 3, 4, 4, '2019-09-26 17:10:20', '2019-09-26 17:11:07', '2019-09-26 17:12:04', 'test 123', 11, '0000000011', 'FINISH');
+(31, 30, 1, 2, 3, 4, 4, '2019-09-26 17:10:20', '2019-09-26 17:11:07', '2019-09-26 17:12:04', 'test 123', 11, '0000000011', 'FINISH'),
+(34, NULL, 1, 1, 4, 3, 3, '2019-09-27 02:45:17', '2019-09-27 02:43:55', '2019-09-27 02:44:29', '** Send back job from pengesahan_cuti ** : verifikasi belum benar, mohon diperiksa kembali', 10, '0000000010', 'INBOX');
 
 -- --------------------------------------------------------
 
@@ -1780,7 +1792,7 @@ INSERT INTO `t_registrasi_cuti` (`t_registrasi_cuti_id`, `order_no`, `nama_pemoh
 (7, '0000000007', 'Helena Lewis', '198318110002', 3, 'Sakit', 'N', 'verifikasi_cuti', '198722149816', 'Alasan cuti tidak dapat diterima', 'N', '2019-09-19', 'admin', '2019-09-26', 'verifikasi_cuti'),
 (8, '0000000008', 'Evan Hubbard', '197718720032', 3, 'Sakit', 'Y', 'verifikasi_cuti', '198722149816', 'test111', 'Y', '2019-09-19', 'admin', '2019-09-26', 'pengesahan_cuti'),
 (9, '0000000009', 'Wiliam Decosta', '198723114053', 30, 'Life is wonderful, so I wanna enjoy it...', 'N', NULL, NULL, NULL, 'N', '2019-09-20', 'admin', '2019-09-20', 'admin'),
-(10, '0000000010', 'Umar Abdul Jabar', '199012781743', 3, 'Liburan', 'N', NULL, NULL, NULL, 'N', '2019-09-26', 'admin', '2019-09-26', 'admin'),
+(10, '0000000010', 'Umar Abdul Jabar', '199012781743', 3, 'Liburan', 'Y', 'verifikasi_cuti', '198722149816', 'lanjut', 'N', '2019-09-26', 'admin', '2019-09-27', 'verifikasi_cuti'),
 (11, '0000000011', 'Tiffano Isya Geri', '199011249097', 5, 'Mendampingi Istri', 'Y', 'verifikasi_cuti', '198722149816', 'Done', 'Y', '2019-09-26', 'admin', '2019-09-26', 'pengesahan_cuti'),
 (12, '0000000012', 'Ninoy Harun', '198477819091', 10, 'Ngurusin Anak', 'Y', 'verifikasi_cuti', '198722149816', 'test123', 'N', '2019-09-26', 'admin', '2019-09-26', 'verifikasi_cuti');
 
@@ -1977,7 +1989,7 @@ ALTER TABLE `t_order`
 -- AUTO_INCREMENT for table `t_order_control_wf`
 --
 ALTER TABLE `t_order_control_wf`
-  MODIFY `t_order_control_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `t_order_control_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `t_registrasi_cuti`
