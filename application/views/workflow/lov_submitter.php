@@ -79,7 +79,7 @@
                     <div class="bootstrap-dialog-footer-buttons col-xs-6">
                         <button class="btn btn-danger" title="Menolak pekerjaan akan masuk ke kotak 'Reject' dan pekerjaan akan berhenti di proses ini" id="btn-submitter-reject" data-dismiss="modal">
                             <i class="fa fa-ban"></i>
-                            Reject
+                            Reject / Delete Job
                         </button>
                         <button class="btn btn-warning" title="Mengembalikan pekerjaan ke pekerjaan sebelumnya" id="btn-submitter-back" data-dismiss="modal">
                             <i class="glyphicon glyphicon-circle-arrow-left"></i>
@@ -89,7 +89,7 @@
                     <div class="bootstrap-dialog-footer-buttons col-xs-1">
                         <button class="btn btn-primary radius-15" title="Submit ke pekerjaan selanjutnya dan akan masuk ke kotak Outbox" id="btn-submitter-submit" data-dismiss="modal">
                             <i class="glyphicon glyphicon-circle-arrow-right"></i>
-                            Submit
+                            Submit Job
                         </button>
                     </div>
                     <div class="bootstrap-dialog-footer-buttons col-xs-5">
@@ -235,7 +235,7 @@ function modal_lov_submitter_init(params_submit, callback) {
     $('#form_submitter_params').val( JSON.stringify(params_submit) );
     
     if(params_submit.prev_job_wf_id == '') {
-        $('#btn-submitter-back').hide();
+        //$('#btn-submitter-back').hide();
     }
 
     callback();

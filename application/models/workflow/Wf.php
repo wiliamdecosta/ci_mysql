@@ -66,6 +66,23 @@ class Wf extends Abstract_model {
         return $row;
     }
 
+    function getTotalInbox($user_name) {
+        
+        $sql = "select count(*) as jumlah_inbox 
+                from t_order_control_wf oc
+                inner join p_job_wf job_wf on oc.p_w_job_wf_id = job_wf.job_wf_id
+                inner join role_user ru on job_wf.role_id = ru.role_id
+                inner join users u on ru.user_id = u.user_id
+                where u.user_name = '".$user_name."'
+                and oc.profile_type = 'INBOX'
+                and (date(oc.donor_date) between date_add(current_date, interval -30 day) and current_date)";
+        
+        $query = $this->db->query($sql);
+        $row = $query->row_array();
+
+        return $row['jumlah_inbox'];
+    }
+
     function getSummaryBox($p_w_doc_type_id, $user_name) {
         
         $sql = "select  a.profile_type, b.job_wf_name as pekerjaan, b.job_wf_id, count(*) as jumlah

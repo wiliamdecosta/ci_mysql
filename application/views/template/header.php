@@ -46,7 +46,7 @@
                         </li>
                         <li class="dropdown">
                             <a class="wf-inbox" href="<?php echo base_url('panel?module_id=999'); ?>">
-                                <i class="fa fa-envelope bigger-120"></i> Inbox
+                                <i class="fa fa-envelope bigger-120"></i> Inbox (<?php echo getTotalInbox(); ?>)
                             </a>
                         </li>
                         
