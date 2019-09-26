@@ -109,7 +109,7 @@ var global_prev_job = '';
 var global_next_job = '';
 
 $('#btn-submitter-submit').on('click', function(e) {
-    result = confirm('Apakah Anda yakin menutup pekerjaan ini ?');
+    result = confirm('Apakah Anda yakin meneruskan pekerjaan ini ke tahap selanjutnya ('+ global_next_job +') ?');
 
     if (result) {
         var submitter_params = $('#form_submitter_params').val();
@@ -183,7 +183,7 @@ $('#btn-submitter-back').on('click', function(e) {
         return false;
     }
 
-    result = confirm('Apakah Anda yakin mengembalikan pekerjaan ini ke tahap '+ global_prev_job +'?');
+    result = confirm('Apakah Anda yakin mengembalikan pekerjaan ini ke tahap sebelumnya ('+ global_prev_job +') ?');
     if (result) {
         var submitter_params = $('#form_submitter_params').val();
         var message = $('#form_submitter_interactive_message').val();

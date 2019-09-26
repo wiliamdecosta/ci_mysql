@@ -3,7 +3,7 @@
         if(empty($p_job_wf_id) and $type == 'next')
             return 'Selesai';
         if(empty($p_job_wf_id) and $type == 'prev')
-            return 'Tahap Awal (Input Data)';
+            return 'Tahap Awal / Input Data';
 
         $ci =& get_instance();
         $ci->load->model('workflow/p_job_wf');
