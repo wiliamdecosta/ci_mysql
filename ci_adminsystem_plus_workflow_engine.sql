@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 26, 2019 at 10:09 PM
+-- Generation Time: Sep 27, 2019 at 01:15 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 5.6.39
 
@@ -1752,7 +1752,7 @@ INSERT INTO `t_order_control_wf` (`t_order_control_id`, `ref_order_control_id`, 
 (27, NULL, 1, 1, 4, 3, 3, '2019-09-26 17:00:21', '2019-09-26 16:13:11', '2019-09-26 16:34:13', '** Send back job from pengesahan_cuti ** : test 123', 12, '0000000012', 'INBOX'),
 (30, NULL, 1, 1, 1, 3, 3, '2019-09-26 17:08:46', '2019-09-26 17:09:28', '2019-09-26 17:10:20', NULL, 11, '0000000011', 'OUTBOX'),
 (31, 30, 1, 2, 3, 4, 4, '2019-09-26 17:10:20', '2019-09-26 17:11:07', '2019-09-26 17:12:04', 'test 123', 11, '0000000011', 'FINISH'),
-(34, NULL, 1, 1, 4, 3, 3, '2019-09-27 02:45:17', '2019-09-27 02:43:55', '2019-09-27 02:44:29', '** Send back job from pengesahan_cuti ** : verifikasi belum benar, mohon diperiksa kembali', 10, '0000000010', 'INBOX');
+(34, NULL, 1, 1, 4, 3, 3, '2019-09-27 03:22:31', '2019-09-27 02:43:55', '2019-09-27 03:19:44', '** Send back job from pengesahan_cuti ** : masih terdapat kekeliruan pd NIP | ** Send back job from pengesahan_cuti ** : verifikasi belum benar, mohon diperiksa kembali', 10, '0000000010', 'INBOX');
 
 -- --------------------------------------------------------
 
@@ -1989,7 +1989,7 @@ ALTER TABLE `t_order`
 -- AUTO_INCREMENT for table `t_order_control_wf`
 --
 ALTER TABLE `t_order_control_wf`
-  MODIFY `t_order_control_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `t_order_control_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `t_registrasi_cuti`
